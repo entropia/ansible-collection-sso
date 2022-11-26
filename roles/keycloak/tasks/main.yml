@@ -1,0 +1,48 @@
+---
+
+- name: Ensure build directory exists
+  file:
+    name: "{{ keycloak_container_build_directory }}"
+    state: directory
+    recurse: yes
+    mode: 0700
+
+- name: Ensure Dockerfile is templated
+  template:
+    src: Dockerfile.j2
+    dest: "{{ keycloak_container_build_directory }}/Dockerfile"
+    mode: 0640
+
+- name: Ensure Keycloak container image is present
+  docker_image:
+    name: "{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}"
+    source: pull
+    state: present
+
+- name: Ensure custom keycloak is built
+  docker_image:
+    name: "{{ keycloak_container_image_name }}"
+    build:
+      args:
+        DB_VENDOR: "{{ keycloak_container_database_vendor }}"
+        KC_ADMIN_PASSWORD: "{{ keycloak_config_admin_password }}"
+      dockerfile: "{{ keycloak_container_build_directory }}/Dockerfile"
+      path: "{{ keycloak_container_build_directory }}"
+    source: build
+    state: present
+
+- name: Ensure keycloak container is running
+  docker_container:
+    name: "{{ keycloak_container_name }}"
+    image: "{{ keycloak_container_image_name }}"
+    env: "{{ keycloak_container_env | default(omit, true) }}"
+    labels: "{{ keycloak_container_labels | default(omit, true) }}"
+    volumes: "{{ keycloak_container_volumes | default(omit, true) }}"
+    restart_policy: "{{ keycloak_container_restart_policy }}"
+    state: started
+    command: >-2
+      start
+      --db-username {{ keycloak_database_username }}
+      --db-password {{ keycloak_database_password }}
+      --db-url jdbc:postgresql://{{ keycloak_database_hostname }}:{{ keycloak_database_port }}/{{ keycloak_database_database }}
+      --optimized
