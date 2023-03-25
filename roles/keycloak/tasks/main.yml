@@ -7,11 +7,18 @@
     recurse: yes
     mode: 0700
 
+- name: Ensure provider jars directory exists
+  file:
+    name: "{{ keycloak_provider_jars_directory }}"
+    state: directory
+    mode: 0775
+
 - name: Ensure Dockerfile is templated
   template:
     src: Dockerfile.j2
     dest: "{{ keycloak_container_build_directory }}/Dockerfile"
-    mode: 0640
+    mode: 0700
+  register: keycloak_buildfile_info
 
 - name: Ensure Keycloak container image is present
   docker_image:
@@ -46,3 +53,5 @@
       --db-password {{ keycloak_database_password }}
       --db-url jdbc:postgresql://{{ keycloak_database_hostname }}:{{ keycloak_database_port }}/{{ keycloak_database_database }}
       --optimized
+  tags:
+    - keycloak-container

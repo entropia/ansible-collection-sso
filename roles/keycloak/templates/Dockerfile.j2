@@ -9,7 +9,18 @@ ARG DB_VENDOR
 ENV KC_DB=$DB_VENDOR
 
 WORKDIR {{ keycloak_container_working_directory }}
-RUN {{ keycloak_container_working_directory }}/bin/kc.sh build
+
+ADD ./providers/* providers/
+# Workaround to set correct mode on jar files
+USER root
+RUN chmod -R 0770 providers/*
+USER keycloak
+
+RUN {{ keycloak_container_working_directory }}/bin/kc.sh --verbose \
+{% for argument in keycloak_container_build_flags | dict2items(key_name='flag', value_name='value') %}
+  --{{- argument['flag'] -}}{{- argument['value'] | default(false, true) | ternary('=' + argument['value'], '') }} \
+{% endfor%}
+  build
 
 
 FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}
