@@ -1,33 +1,33 @@
 ---
 
 - name: Ensure build directory exists
-  file:
+  ansible.builtin.file:
     name: "{{ keycloak_container_build_directory }}"
     state: directory
     recurse: yes
     mode: 0700
 
 - name: Ensure provider jars directory exists
-  file:
+  ansible.builtin.file:
     name: "{{ keycloak_provider_jars_directory }}"
     state: directory
     mode: 0775
 
 - name: Ensure Dockerfile is templated
-  template:
+  ansible.builtin.template:
     src: Dockerfile.j2
     dest: "{{ keycloak_container_build_directory }}/Dockerfile"
     mode: 0700
   register: keycloak_buildfile_info
 
-- name: Ensure Keycloak container image is present
+- name: Ensure upstream Keycloak container image '{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}' is present
   docker_image:
     name: "{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}"
     source: pull
     state: present
 
-- name: Ensure custom keycloak is built
-  docker_image:
+- name: Ensure custom keycloak container image '{{ keycloak_container_image_name }}' is built
+  community.docker.docker_image:
     name: "{{ keycloak_container_image_name }}"
     build:
       args:
@@ -39,7 +39,7 @@
     state: present
 
 - name: Ensure keycloak container is running
-  docker_container:
+  community.docker.docker_container:
     name: "{{ keycloak_container_name }}"
     image: "{{ keycloak_container_image_name }}"
     env: "{{ keycloak_container_env | default(omit, true) }}"
