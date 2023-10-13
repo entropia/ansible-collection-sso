@@ -50,13 +50,14 @@
     labels: "{{ keycloak_container_labels | default(omit, true) }}"
     volumes: "{{ keycloak_container_volumes | default(omit, true) }}"
     restart_policy: "{{ keycloak_container_restart_policy }}"
-    recreate: "{{ keycloak_container_image_status.changed if keycloak_container_image_status else false }}"
+    recreate: "{{ keycloak_container_force_recreate | default(false) or (keycloak_container_image_status.changed if keycloak_container_image_status else false) }}"
     state: started
     command: >-2
       start
       --db-username {{ keycloak_database_username }}
       --db-password {{ keycloak_database_password }}
       --db-url jdbc:postgresql://{{ keycloak_database_hostname }}:{{ keycloak_database_port }}/{{ keycloak_database_database }}
+      {{ keycloak_container_extra_start_flags | default([]) | join(' ') }}
       --optimized
   tags:
     - keycloak-container
