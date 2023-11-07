@@ -20,7 +20,10 @@ RUN {{ keycloak_container_working_directory }}/bin/kc.sh --verbose \
 {% for argument in keycloak_container_build_flags | dict2items(key_name='flag', value_name='value') %}
   --{{- argument['flag'] -}}{{- argument['value'] | default(false, true) | ternary('=' + argument['value'], '') }} \
 {% endfor%}
-  build
+  build \
+{% if keycloak_container_build_features | default([]) | length > 0 %}
+  --features="{{ keycloak_container_build_features | join(',') }}"
+{% endif %}
 
 
 FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}
