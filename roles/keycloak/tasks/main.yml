@@ -46,6 +46,7 @@
     name: "{{ keycloak_container_name }}"
     image: "{{ keycloak_container_image_name }}"
     env: "{{ keycloak_container_env | default(omit, true) }}"
+    ports: "{{ keycloak_container_ports | default(omit, true) }}"
     hostname: "{{ keycloak_container_hostname | default(omit) }}"
     labels: "{{ keycloak_container_labels | default(omit, true) }}"
     volumes: "{{ keycloak_container_volumes | default(omit, true) }}"
