@@ -8,7 +8,7 @@ keycloak_container_image_name: "keycloak:{{ keycloak_version }}-custom"
 
 keycloak_container_database_vendor: postgres
 keycloak_base_path: /opt/keycloak
-keycloak_container_build_directory: /opt/keycloak/build
+keycloak_container_build_directory: "{{ keycloak_base_path }}/build"
 keycloak_container_build_jar_directory: providers
 keycloak_container_build_flags: {}
 keycloak_provider_jars_directory: "{{ keycloak_base_path }}/providers"
