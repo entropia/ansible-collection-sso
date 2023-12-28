@@ -19,6 +19,8 @@
     dest: "{{ keycloak_container_build_directory }}/Dockerfile"
     mode: 0700
   register: keycloak_buildfile_info
+  tags:
+    - keycloak-container
 
 - name: Ensure upstream Keycloak container image '{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}' is present
   docker_image:
@@ -26,6 +28,8 @@
     source: pull
     state: present
   register: keycloak_container_image_upstream_status
+  tags:
+    - keycloak-container
 
 - name: Ensure custom keycloak container image '{{ keycloak_container_image_name }}' is built
   community.docker.docker_image:
@@ -40,6 +44,8 @@
     state: present
     force_source: "{{ keycloak_buildfile_info.changed or keycloak_container_image_upstream_status.changed or (keycloak_force_rebuild_container | default(false))}}"
   register: keycloak_container_image_status
+  tags:
+    - keycloak-container
 
 - name: Ensure keycloak container is running
   community.docker.docker_container:
