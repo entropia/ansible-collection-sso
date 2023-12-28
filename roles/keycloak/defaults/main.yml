@@ -1,6 +1,6 @@
 ---
 
-keycloak_version: 21.1.2
+keycloak_version: 23.0.3
 keycloak_container_name: keycloak
 
 keycloak_container_upstream_image_name: quay.io/keycloak/keycloak
