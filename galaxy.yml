@@ -10,5 +10,6 @@ authors:
 tags:
     - sso
     - keycloak
-    - collection
+build_ignore:
+    - '*.tar.gz'
 repository: "https://github.com/entropia/ansible-collection-sso"
