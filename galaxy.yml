@@ -3,6 +3,7 @@ namespace: "entropia"
 name: "sso"
 version: "0.0.2"
 readme: "README.md"
+license_file: "LICENSE"
 authors:
     - "promasu <git@promasu.tech>"
     - "transcaffeine <transcaffeine@finally.coffee>"
