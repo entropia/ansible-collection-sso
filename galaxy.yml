@@ -1,0 +1,13 @@
+---
+namespace: "entropia"
+name: "sso"
+version: "0.0.2"
+readme: "README.md"
+authors:
+    - "promasu <git@promasu.tech>"
+    - "transcaffeine <transcaffeine@finally.coffee>"
+tags:
+    - sso
+    - keycloak
+    - collection
+repository: "https://github.com/entropia/ansible-collection-sso"
