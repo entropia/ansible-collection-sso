@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: keycloak
+  namespace: entropia
+  authors:
+    - "promasu <git@promasu.tech>"
+    - "transcaffeine <transcaffeine@finally.coffee>"
+  description: An Ansible role to build and install keycloak in docker
+  license: GPL-3.0-only
+  min_ansible_version: "2.16"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
